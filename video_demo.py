@@ -21,7 +21,7 @@ from core import utils
 
 IMAGE_H, IMAGE_W = 416, 416
 video_path = "./data/demo_data/road.mp4"
-video_path = 0 # use camera
+# video_path = 0 # use camera
 classes = utils.read_coco_names('./data/coco.names')
 num_classes = len(classes)
 input_tensor, output_tensors = utils.read_pb_return_tensors(tf.get_default_graph(),
@@ -53,6 +53,6 @@ with tf.Session() as sess:
         cv2.namedWindow("result", cv2.WINDOW_AUTOSIZE)
         result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
         cv2.imshow("result", result)
-        if cv2.waitKey(1) & 0xFF == ord('q'): break
+        if cv2.waitKey(10) & 0xFF == ord('q'): break
 
 
