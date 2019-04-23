@@ -129,8 +129,10 @@ def main(argv):
         if flags.freeze:
             saver.restore(sess, flags.ckpt_file)
             print('=> checkpoint file restored from ', flags.ckpt_file)
-            utils.freeze_graph(sess, './checkpoint/yolov3_cpu_nms.pb', cpu_out_node_names)
-            utils.freeze_graph(sess, './checkpoint/yolov3_gpu_nms.pb', gpu_out_node_names)
+            # utils.freeze_graph(sess, './checkpoint/yolov3_cpu_nms.pb', cpu_out_node_names)
+            # utils.freeze_graph(sess, './checkpoint/yolov3_gpu_nms.pb', gpu_out_node_names)
+            # utils.freeze_graph(sess, flags.ckpt_file + '_cpu.pb', cpu_out_node_names)
+            utils.freeze_graph(sess, flags.ckpt_file + '.pb', gpu_out_node_names)
 
 
 if __name__ == "__main__": main(sys.argv)
