@@ -215,3 +215,6 @@ class Dataset(object):
 
     def get_next(self):
         return self._iterator.get_next()
+
+    def num_samples(self):
+        return len(self.data)
