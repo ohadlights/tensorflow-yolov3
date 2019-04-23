@@ -40,8 +40,8 @@ def main(args):
     # datasets
 
     parser = Parser(IMAGE_H, IMAGE_W, ANCHORS, NUM_CLASSES)
-    trainset = Dataset(parser, r'train_widerface.txt', args.batch_size, shuffle=SHUFFLE_SIZE)
-    testset = Dataset(parser, r'test_widerface.txt', args.batch_size, shuffle=None)
+    trainset = Dataset(parser, r'data/train_widerface.txt', args.batch_size, shuffle=SHUFFLE_SIZE)
+    testset = Dataset(parser, r'data/test_widerface.txt', args.batch_size, shuffle=None)
     steps_per_epoch = int(trainset.num_samples() / args.batch_size)
 
     # build model
