@@ -8,7 +8,6 @@ from face.dataset import Dataset, Parser
 IMAGE_H, IMAGE_W = 416, 416
 SHUFFLE_SIZE = 500
 CLASSES = utils.read_coco_names('face.names')
-ANCHORS = utils.get_anchors('widerface_anchors.txt', IMAGE_H, IMAGE_W)
 NUM_CLASSES = len(CLASSES)
 EVAL_INTERNAL = 100
 SAVE_INTERNAL = 500
@@ -37,9 +36,13 @@ def get_restore_path(args):
 
 def main(args):
 
+    # configuration
+
+    anchors = utils.get_anchors(args.anchors_path, IMAGE_H, IMAGE_W)
+
     # datasets
 
-    parser = Parser(IMAGE_H, IMAGE_W, ANCHORS, NUM_CLASSES)
+    parser = Parser(IMAGE_H, IMAGE_W, anchors, NUM_CLASSES)
     trainset = Dataset(parser, r'data/train_widerface.txt', args.batch_size, shuffle=SHUFFLE_SIZE)
     testset = Dataset(parser, r'data/test_widerface.txt', args.batch_size, shuffle=None)
     steps_per_epoch = int(trainset.num_samples() / args.batch_size)
@@ -50,7 +53,7 @@ def main(args):
     example = tf.cond(is_training, lambda: trainset.get_next(), lambda: testset.get_next())
 
     images, *y_true = example
-    model = yolov3.yolov3(NUM_CLASSES, ANCHORS)
+    model = yolov3.yolov3(NUM_CLASSES, anchors)
 
     with tf.variable_scope('yolov3'):
         pred_feature_map = model.forward(images, is_training=is_training)
@@ -129,6 +132,9 @@ def main(args):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
+
+    p.add_argument('--anchors_path', default=r'widerface_anchors.txt')
+
     p.add_argument('--restore_path', default='./../checkpoint/yolov3.ckpt')
     p.add_argument('--fine_tune', action='store_true')
     p.add_argument('--reset_head', action='store_true')
