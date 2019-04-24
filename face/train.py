@@ -7,7 +7,7 @@ from face.dataset import Dataset, Parser
 
 IMAGE_H, IMAGE_W = 416, 416
 SHUFFLE_SIZE = 500
-CLASSES = utils.read_coco_names('face.names')
+CLASSES = utils.read_coco_names('./data/face.names')
 NUM_CLASSES = len(CLASSES)
 EVAL_INTERNAL = 100
 SAVE_INTERNAL = 500
@@ -43,8 +43,8 @@ def main(args):
     # datasets
 
     parser = Parser(IMAGE_H, IMAGE_W, anchors, NUM_CLASSES)
-    trainset = Dataset(parser, r'data/train_widerface.txt', args.batch_size, shuffle=SHUFFLE_SIZE)
-    testset = Dataset(parser, r'data/test_widerface.txt', args.batch_size, shuffle=None)
+    trainset = Dataset(parser, args.train_list_path, args.batch_size, shuffle=SHUFFLE_SIZE)
+    testset = Dataset(parser, args.test_list_path, args.batch_size, shuffle=None)
     steps_per_epoch = int(trainset.num_samples() / args.batch_size)
 
     # build model
@@ -133,7 +133,9 @@ def main(args):
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
 
-    p.add_argument('--anchors_path', default=r'widerface_anchors.txt')
+    p.add_argument('--anchors_path', default=r'./data/widerface_anchors.txt')
+    p.add_argument('--train_list_path', default=r'./data/train_widerface_vgg.txt')
+    p.add_argument('--test_list_path', default=r'./data/test_widerface.txt')
 
     p.add_argument('--restore_path', default='./../checkpoint/yolov3.ckpt')
     p.add_argument('--fine_tune', action='store_true')
