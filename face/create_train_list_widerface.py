@@ -4,13 +4,22 @@ from collections import defaultdict
 
 
 def create_list(images_root, annotations_file, output_path):
-    content = [l.strip().split() for l in open(annotations_file)]
+    content = [l.strip() for l in open(annotations_file)]
 
     annotations = defaultdict(list)
-    for l in content:
-        path = os.path.join(images_root, l[-1])
-        box = [l[-11], l[-10], l[-9], l[-8]]
-        annotations[path] += [box]
+
+    i = 0
+    while i < len(content):
+        path = os.path.join(images_root, content[i])
+        i += 1
+        num_boxes = int(content[i])
+        i += 1
+        for i in range(i, i + num_boxes):
+            box = [int(a) for a in content[i].split()[0:4]]
+            box = [box[0], box[1], box[0] + box[2], box[1] + box[3]]
+            box = [str(a) for a in box]
+            annotations[path] += [box]
+        i += 1
 
     with open(output_path, 'w') as f:
         for path, boxes in annotations.items():
@@ -29,9 +38,9 @@ def main(args):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
-    p.add_argument('--images_root', default=r'X:\wider-face\WFLW_images')
-    p.add_argument('--train_annotations_file', default=r'X:\wider-face\WFLW_annotations\list_98pt_rect_attr_train_test\list_98pt_rect_attr_train.txt')
-    p.add_argument('--train_output_path', default='train_widerface.txt')
-    p.add_argument('--test_annotations_file', default=r'X:\wider-face\WFLW_annotations\list_98pt_rect_attr_train_test\list_98pt_rect_attr_test.txt')
-    p.add_argument('--test_output_path', default='test_widerface.txt')
+    p.add_argument('--images_root', default=r'X:\wider-face\WIDER_all\images')
+    p.add_argument('--train_annotations_file', default=r'X:\wider-face\wider_face_split\wider_face_train_bbx_gt.txt')
+    p.add_argument('--train_output_path', default='./data/train_widerface.txt')
+    p.add_argument('--test_annotations_file', default=r'X:\wider-face\wider_face_split\wider_face_val_bbx_gt.txt')
+    p.add_argument('--test_output_path', default='./data/test_widerface.txt')
     main(p.parse_args())
